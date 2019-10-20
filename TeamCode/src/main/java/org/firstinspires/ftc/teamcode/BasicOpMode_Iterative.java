@@ -99,7 +99,7 @@ public class BasicOpMode_Iterative extends OpMode
         forwardDistanceSensor = hardwareMap.get (DistanceSensor.class, "forwardDistanceSensor");
         touchSensor = hardwareMap.get (DigitalChannel.class, "touchSensor");
         /* hookDrive = hardwareMap.get (Servo.class,"hookDrive");*/
-
+//                                                              HEMLO 13
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
