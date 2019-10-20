@@ -29,10 +29,17 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+import android.hardware.Sensor;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -63,6 +70,9 @@ public class BasicOpMode_Iterative extends OpMode
     private DcMotor rightRearDrive = null;
     private DcMotor intakeDrive = null;
     private DcMotor linearDrive = null;
+    private ColorSensor blockColorSensor = null;
+    private DistanceSensor forwardDistanceSensor = null;
+    private DigitalChannel touchSensor = null;
     /*    private Servo hookDrive = null;*/
     private double sensitivity = 0.9;
     private boolean isItUP = false;
@@ -85,6 +95,9 @@ public class BasicOpMode_Iterative extends OpMode
         rightRearDrive = hardwareMap.get(DcMotor.class, "rightRearMotor");
         intakeDrive = hardwareMap.get(DcMotor.class, "intakeDrive");
         linearDrive = hardwareMap.get(DcMotor.class, "linearDrive");
+        blockColorSensor = hardwareMap.get(ColorSensor.class,"blockColorSensor");
+        forwardDistanceSensor = hardwareMap.get (DistanceSensor.class, "forwardDistanceSensor");
+        touchSensor = hardwareMap.get (DigitalChannel.class, "touchSensor");
         /* hookDrive = hardwareMap.get (Servo.class,"hookDrive");*/
 
 
@@ -99,7 +112,7 @@ public class BasicOpMode_Iterative extends OpMode
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
     }
-//                                                           HEMLO 10
+//                                                           HEMLO 11
     public void drive_forward() {
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftRearDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -321,8 +334,14 @@ public class BasicOpMode_Iterative extends OpMode
         telemetry.addData("Motors", "left (%.2f), right (%.2f), intakePower (%.2f), LinearPower (%.2f)", leftPower, rightPower, intakePower, linearPower);
         telemetry.addData("sensitivity", sensitivity);
         telemetry.addData("hookPosition", hookPosition);
+        if(touchSensor.getState() == true) {
+            telemetry.addData("digitalSensorPressed", "Is Not Pressed");
+        } else {
+            telemetry.addData("digitalSensorPressed", "Is Pressed");
+        }
         int linearPosition = linearDrive.getCurrentPosition();
         telemetry.addData("LinearPosition", linearPosition);
+        telemetry.update();
     }
 
 
