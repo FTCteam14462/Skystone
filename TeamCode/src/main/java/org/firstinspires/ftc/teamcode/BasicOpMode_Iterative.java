@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Color;
 import android.hardware.Sensor;
 
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -71,7 +72,7 @@ public class BasicOpMode_Iterative extends OpMode
     //private DcMotor linearDrive = null;
     private ColorSensor blockColorSensor = null;
     private DistanceSensor forwardDistanceSensor = null;
-    private DigitalChannel touchSensor = null;
+    private RevTouchSensor touchSensor = null;
     /*    private Servo hookDrive = null;*/
     private double sensitivity = 0.9;
     private boolean isItUP = false;
@@ -96,7 +97,7 @@ public class BasicOpMode_Iterative extends OpMode
         //linearDrive = hardwareMap.get(DcMotor.class, "linearDrive");
         blockColorSensor = hardwareMap.get(ColorSensor.class,"blockColorSensor");
         forwardDistanceSensor = hardwareMap.get (DistanceSensor.class, "forwardDistanceSensor");
-        touchSensor = hardwareMap.get (DigitalChannel.class, "touchSensor");
+        touchSensor = hardwareMap.get (RevTouchSensor.class, "touchSensor");
         /* hookDrive = hardwareMap.get (Servo.class,"hookDrive");*/
 //                                                              HEMLO 13
 
@@ -141,7 +142,7 @@ public class BasicOpMode_Iterative extends OpMode
             drive_forward(power);
         }
     }
-
+//                                                          HEMLO 15
     public void drive_backward()
     {
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -333,7 +334,7 @@ public class BasicOpMode_Iterative extends OpMode
         telemetry.addData("Motors", "left (%.2f), right (%.2f), intakePower (%.2f), LinearPower (%.2f)", leftPower, rightPower, intakePower, linearPower);
         telemetry.addData("sensitivity", sensitivity);
         telemetry.addData("hookPosition", hookPosition);
-        if(touchSensor.getState() == true) {
+        if(touchSensor.isPressed() == true) {
             telemetry.addData("digitalSensorPressed", "Is Not Pressed");
         } else {
             telemetry.addData("digitalSensorPressed", "Is Pressed");
