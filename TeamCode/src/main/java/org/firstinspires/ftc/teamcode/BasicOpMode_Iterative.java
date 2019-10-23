@@ -6,7 +6,6 @@
  *
  * Redistributions of source code must retain the above copyright notice, this list
  * of conditions and the following disclaimer.
-
  * Redistributions in binary form must reproduce the above copyright notice, this
  * list of conditions and the following disclaimer in the documentation and/or
  * other materials provided with the distribution.
@@ -29,10 +28,17 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+import android.hardware.Sensor;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -57,10 +63,15 @@ public class BasicOpMode_Iterative extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
-    private DcMotor intakeDrive = null;
-    private DcMotor linearDrive = null;
+    private DcMotor leftFrontDrive = null;
+    private DcMotor leftRearDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor rightRearDrive = null;
+    //private DcMotor intakeDrive = null;
+    //private DcMotor linearDrive = null;
+    private ColorSensor blockColorSensor = null;
+    private DistanceSensor forwardDistanceSensor = null;
+    private DigitalChannel touchSensor = null;
     /*    private Servo hookDrive = null;*/
     private double sensitivity = 0.9;
     private boolean isItUP = false;
@@ -77,21 +88,130 @@ public class BasicOpMode_Iterative extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "left motor");
-        rightDrive = hardwareMap.get(DcMotor.class, "right motor");
-        intakeDrive = hardwareMap.get(DcMotor.class, "intakeDrive");
-        linearDrive = hardwareMap.get(DcMotor.class, "linearDrive");
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFrontMotor");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontMotor");
+        leftRearDrive  = hardwareMap.get(DcMotor.class, "leftRearMotor");
+        rightRearDrive = hardwareMap.get(DcMotor.class, "rightRearMotor");
+        //intakeDrive = hardwareMap.get(DcMotor.class, "intakeDrive");
+        //linearDrive = hardwareMap.get(DcMotor.class, "linearDrive");
+        blockColorSensor = hardwareMap.get(ColorSensor.class,"blockColorSensor");
+        forwardDistanceSensor = hardwareMap.get (DistanceSensor.class, "forwardDistanceSensor");
+        touchSensor = hardwareMap.get (DigitalChannel.class, "touchSensor");
         /* hookDrive = hardwareMap.get (Servo.class,"hookDrive");*/
-
+//                                                              HEMLO 13
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftRearDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightRearDrive.setDirection(DcMotor.Direction.FORWARD);
         /*   hookDrive.setPosition(hook_home);*/
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+    }
+    //                                                           HEMLO 11
+    public void drive_forward() {
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftRearDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightRearDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+    }
+
+    public void set_drive_power(float power)
+    {
+        rightFrontDrive.setPower(power);
+        leftFrontDrive.setPower(power);
+        rightRearDrive.setPower(power);
+        leftRearDrive.setPower(power);
+    }
+
+    public void drive_forward(float power)
+    {
+        set_drive_power(power);
+        drive_forward();
+    }
+
+    public void drive_forward(float power, double time)
+    {
+        double currentTime = runtime.time();
+        while((runtime.time()- currentTime) < time)
+        {
+            drive_forward(power);
+        }
+    }
+
+    public void drive_backward()
+    {
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftRearDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightRearDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+
+    }
+
+    public void drive_backward(float power)
+    {
+        set_drive_power(power);
+        drive_backward();
+    }
+
+    public void drive_backward(float power, double time)
+    {
+        double currentTime = runtime.time();
+        while((runtime.time()- currentTime) < time)
+        {
+            drive_backward(power);
+        }
+    }
+
+    public void drive_right()
+    {
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftRearDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightRearDrive.setDirection(DcMotor.Direction.FORWARD);
+
+    }
+
+    public void drive_right(float power)
+    {
+        set_drive_power(power);
+        drive_right();
+    }
+
+    public void drive_right(float power, double time)
+    {
+        double currentTime = runtime.time();
+        while((runtime.time()- currentTime) < time)
+        {
+            drive_right(power);
+        }
+    }
+
+    public void drive_left()
+    {
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftRearDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightRearDrive.setDirection(DcMotor.Direction.REVERSE);
+
+    }
+
+    public void drive_left(float power)
+    {
+        set_drive_power(power);
+        drive_left();
+    }
+
+    public void drive_left(float power, double time)
+    {
+        double currentTime = runtime.time();
+        while((runtime.time()- currentTime) < time)
+        {
+            drive_left(power);
+        }
     }
 
     /*
@@ -204,17 +324,23 @@ public class BasicOpMode_Iterative extends OpMode
         }
 
         /*hookDrive.setPosition(hookPosition);*/
-        linearDrive.setPower(linearPower);
-        intakeDrive.setPower(intakePower);
-        rightDrive.setPower(rightPower);
-        leftDrive.setPower(leftPower);
+        //linearDrive.setPower(linearPower);
+        //intakeDrive.setPower(intakePower);
+        //rightDrive.setPower(rightPower);
+        //leftDrive.setPower(leftPower);
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f), intakePower (%.2f), LinearPower (%.2f)", leftPower, rightPower, intakePower, linearPower);
         telemetry.addData("sensitivity", sensitivity);
         telemetry.addData("hookPosition", hookPosition);
-        int linearPosition = linearDrive.getCurrentPosition();
-        telemetry.addData("LinearPosition", linearPosition);
+        if(touchSensor.getState() == true) {
+            telemetry.addData("digitalSensorPressed", "Is Not Pressed");
+        } else {
+            telemetry.addData("digitalSensorPressed", "Is Pressed");
+        }
+        //int linearPosition = linearDrive.getCurrentPosition();
+        //telemetry.addData("LinearPosition", linearPosition);
+        telemetry.update();
     }
 
 
