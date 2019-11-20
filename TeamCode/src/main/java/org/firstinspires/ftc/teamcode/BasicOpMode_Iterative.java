@@ -32,12 +32,15 @@ import android.graphics.Color;
 import android.hardware.Sensor;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevTouchSensor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -72,11 +75,11 @@ public class BasicOpMode_Iterative extends OpMode
     //private DcMotor leftFrontDrive = null;
     private DcMotor leftRearDrive = null;
     private DcMotor rightFrontDrive = null;
-    //private DcMotor rightRearDrive = null;
+    private DcMotor rightRearDrive = null;
+    private DcMotor leftFrontDrive = null;
     //private DcMotor intakeDrive = null;
     //private DcMotor linearDrive = null;
-    private ColorSensor blockColorSensor = null;
-    private ColorSensor colorSensor = null;
+    private RevColorSensorV3 blockColorSensor = null;
     private DistanceSensor forwardDistanceSensor = null;
     private TouchSensor touchSensor = null;
 
@@ -99,11 +102,11 @@ public class BasicOpMode_Iterative extends OpMode
         //leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFrontMotor");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontMotor");
         leftRearDrive  = hardwareMap.get(DcMotor.class, "leftRearMotor");
-        //rightRearDrive = hardwareMap.get(DcMotor.class, "rightRearMotor");
+        rightRearDrive = hardwareMap.get(DcMotor.class, "rightRearMotor");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontMotor");
         //intakeDrive = hardwareMap.get(DcMotor.class, "intakeDrive");
         //linearDrive = hardwareMap.get(DcMotor.class, "linearDrive");
-        blockColorSensor = hardwareMap.get(ColorSensor.class,"blockColorSensor");
-        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+        blockColorSensor = hardwareMap.get(RevColorSensorV3.class,"blockColorSensor");
         forwardDistanceSensor = hardwareMap.get (DistanceSensor.class, "forwardDistanceSensor");
         touchSensor = hardwareMap.touchSensor.get ("touchSensor");
         /* hookDrive = hardwareMap.get (Servo.class,"hookDrive");*/
@@ -114,7 +117,8 @@ public class BasicOpMode_Iterative extends OpMode
         //leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftRearDrive.setDirection(DcMotor.Direction.REVERSE);
-        //rightRearDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightRearDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         /*   hookDrive.setPosition(hook_home);*/
 
         // Tell the driver that initialization is complete.
@@ -124,25 +128,26 @@ public class BasicOpMode_Iterative extends OpMode
     public void drive_forward() {
         //leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftRearDrive.setDirection(DcMotor.Direction.REVERSE);
-        //rightRearDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightRearDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
     }
 
-    public void set_drive_power(float power)
+    public void set_drive_power(double power)
     {
         rightFrontDrive.setPower(power);
-        //leftFrontDrive.setPower(power);
-        //rightRearDrive.setPower(power);
+        leftFrontDrive.setPower(power);
+        rightRearDrive.setPower(power);
         leftRearDrive.setPower(power);
     }
 
-    public void drive_forward(float power)
+    public void drive_forward(double power)
     {
         set_drive_power(power);
         drive_forward();
     }
     //                                                         HEMLO 14
-    public void drive_forward(float power, double time)
+    public void drive_forward(double power, double time)
     {
         double currentTime = runtime.time();
         while((runtime.time()- currentTime) < time)
@@ -153,20 +158,20 @@ public class BasicOpMode_Iterative extends OpMode
     //                                                          HEMLO 15
     public void drive_backward()
     {
-        //leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftRearDrive.setDirection(DcMotor.Direction.FORWARD);
-        //rightRearDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightRearDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
 
     }
 
-    public void drive_backward(float power)
+    public void drive_backward(double power)
     {
         set_drive_power(power);
         drive_backward();
     }
 
-    public void drive_backward(float power, double time)
+    public void drive_backward(double power, double time)
     {
         double currentTime = runtime.time();
         while((runtime.time()- currentTime) < time)
@@ -177,20 +182,20 @@ public class BasicOpMode_Iterative extends OpMode
 
     public void drive_right()
     {
-        //leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftRearDrive.setDirection(DcMotor.Direction.REVERSE);
-        //rightRearDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightRearDrive.setDirection(DcMotor.Direction.FORWARD);
 
     }
 
-    public void drive_right(float power)
+    public void drive_right(double power)
     {
         set_drive_power(power);
         drive_right();
     }
 
-    public void drive_right(float power, double time)
+    public void drive_right(double power, double time)
     {
         double currentTime = runtime.time();
         while((runtime.time()- currentTime) < time)
@@ -201,20 +206,20 @@ public class BasicOpMode_Iterative extends OpMode
 
     public void drive_left()
     {
-        //leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftRearDrive.setDirection(DcMotor.Direction.FORWARD);
-        //rightRearDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightRearDrive.setDirection(DcMotor.Direction.REVERSE);
 
     }
 
-    public void drive_left(float power)
+    public void drive_left(double power)
     {
         set_drive_power(power);
         drive_left();
     }
 
-    public void drive_left(float power, double time)
+    public void drive_left(double power, double time)
     {
         double currentTime = runtime.time();
         while((runtime.time()- currentTime) < time)
@@ -337,8 +342,11 @@ public class BasicOpMode_Iterative extends OpMode
         //intakeDrive.setPower(intakePower);
         //rightDrive.setPower(rightPower);
         //leftDrive.setPower(leftPower);
-        rightFrontDrive.setPower(1.0);
-        leftRearDrive.setPower(1.0);
+        //rightFrontDrive.setPower(1.0);
+        //leftRearDrive.setPower(1.0);
+        linearPower = .7;
+
+        drive_forward(linearPower);
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f), intakePower (%.2f), LinearPower (%.2f)", leftPower, rightPower, intakePower, linearPower);
@@ -346,16 +354,18 @@ public class BasicOpMode_Iterative extends OpMode
         telemetry.addData("hookPosition", hookPosition);
 
 
-        SwitchableLight light = (SwitchableLight) colorSensor;
+       /* SwitchableLight light = (SwitchableLight) blockColorSensor;
         if(touchSensor.isPressed()) {
             telemetry.addData("digitalSensorPressed", "Is Pressed");
             light.enableLight(true);
             telemetry.addData("range", String.format("%.01f in", forwardDistanceSensor.getDistance(DistanceUnit.INCH)));
+            rightFrontDrive.setPower(1);
         }
         else {
             telemetry.addData("digitalSensorPressed", "Is Not Pressed");
             light.enableLight(false);
-        }
+            rightFrontDrive.setPower(0);
+        }*/
 
 //                                                     HEMLO 16
 
