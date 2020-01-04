@@ -52,19 +52,19 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
 @Disabled
-public class BasicOpMode_Iterative extends OpMode
-{
-    // Declare OpMode members.
+public class BasicOpMode_Iterative extends OpMode{
+    private DcMotor rightDrive = null;
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
-
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
+
+            // Declare OpMode members.
+
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
