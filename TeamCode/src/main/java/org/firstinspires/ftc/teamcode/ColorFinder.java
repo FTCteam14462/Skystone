@@ -20,6 +20,15 @@ public class ColorFinder {
 
     }
 
+    public boolean isYellowBlock()
+    {
+        return sensorColor.alpha() < 603 && sensorColor.alpha() > 558
+                && sensorColor.red() < 211 && sensorColor.red() > 181
+                && sensorColor.green() < 308 && sensorColor.green() > 288
+                && sensorColor.blue() <  111 && sensorColor.blue() > 91;
+
+    }
+
     public boolean isRedLine()
     {
         return sensorColor.alpha() < 420 && sensorColor.alpha() > 360
@@ -39,5 +48,3 @@ public class ColorFinder {
     }
 
 }
-
-

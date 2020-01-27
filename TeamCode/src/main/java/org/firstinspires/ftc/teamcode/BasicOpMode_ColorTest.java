@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import java.util.Locale;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -47,8 +48,7 @@ public class BasicOpMode_ColorTest extends OpMode {
         telemetry.addData("Hue", hsvValues[0]);
 
         telemetry.addData("IsBlackBlock", isBlackBlock());
-        telemetry.addData("IsBlueLine", isBlueLine());
-        telemetry.addData("IsRedLine", isRedLine());
+        telemetry.addData("IsYellowBlock", isYellowBlock());
         telemetry.update();
 
 
@@ -62,6 +62,16 @@ public class BasicOpMode_ColorTest extends OpMode {
                 && sensorColor.blue() < 95 && sensorColor.blue() > 75;
 
     }
+
+    public boolean isYellowBlock()
+    {
+        return sensorColor.alpha() < 603 && sensorColor.alpha() > 558
+                && sensorColor.red() < 211 && sensorColor.red() > 181
+                && sensorColor.green() < 308 && sensorColor.green() > 288
+                && sensorColor.blue() <  111 && sensorColor.blue() > 91;
+
+    }
+
 
     public boolean isRedLine()
     {

@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Claws {
 
-    CRServo leftClaw = null;
-    CRServo rightClaw = null;
-    public void initialize(CRServo left, CRServo right)
+    Servo leftClaw = null;
+    Servo rightClaw = null;
+    public void initialize(Servo left, Servo right)
     {
         leftClaw = left;
         rightClaw = right;
@@ -17,20 +17,20 @@ public class Claws {
 
     public void grip(double position)
     {
-        leftClaw.setPower(position);
-        rightClaw.setPower(position);
+        leftClaw.setPosition(position*-1);
+        rightClaw.setPosition(position);
     }
 
     public  void release(double position)
     {
-        leftClaw.setPower(position*-1);
-        rightClaw.setPower(position*-1);
+        leftClaw.setPosition(position);
+        rightClaw.setPosition(position*-1);
     }
 
     public void stop()
     {
-        leftClaw.setPower(0);
-        rightClaw.setPower(0);
+        leftClaw.setPosition(0);
+        rightClaw.setPosition(0);
     }
 
 }

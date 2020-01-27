@@ -49,7 +49,6 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
@@ -328,14 +327,7 @@ public class BasicOpMode_Iterative extends OpMode
             linearPower = right_trigger;
         }
         //          HEMLO 4
-        boolean right_bumper = gamepad2.right_bumper;
-        if (right_bumper)  {
-            hookPosition = 0.0;
-        }
-        boolean left_bumper = gamepad2.left_bumper;
-        if (left_bumper) {
-            hookPosition = 0.25;
-        }
+
 
         /*hookDrive.setPosition(hookPosition);*/
         //linearDrive.setPower(linearPower);
